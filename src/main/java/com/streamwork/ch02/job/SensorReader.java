@@ -16,7 +16,7 @@ class SensorReader extends Source {
   private static final int minMillis = 1000;
   private static final int maxMillis = 5000;
 
-  public SensorReader(String name, int port) {
+  public SensorReader(String name) {
     super(name);
   }
 
