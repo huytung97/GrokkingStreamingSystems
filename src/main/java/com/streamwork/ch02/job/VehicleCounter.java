@@ -11,6 +11,7 @@ import com.streamwork.ch02.api.Operator;
 
 class VehicleCounter extends Operator {
   private final Map<String, Integer> countMap = new HashMap<String, Integer>();
+  private int totalFees = 0;
 
   public VehicleCounter(String name) {  super(name);  }
 
@@ -19,9 +20,11 @@ class VehicleCounter extends Operator {
     String vehicle = ((VehicleEvent)vehicleEvent).getData();
     Integer count = countMap.getOrDefault(vehicle, 0) + 1;
     countMap.put(vehicle, count);
+    totalFees += VehicleFeesConfig.getFeeForVehicleType(vehicle);
 
     System.out.println("VehicleCounter --> ");
     printCountMap();
+    System.out.println("Total Fees: " + totalFees);
   }
 
   private void printCountMap() {

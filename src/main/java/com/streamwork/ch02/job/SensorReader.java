@@ -3,6 +3,8 @@ package com.streamwork.ch02.job;
 import java.net.*;
 import java.io.*;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.streamwork.ch02.api.Event;
@@ -10,13 +12,7 @@ import com.streamwork.ch02.api.Source;
 
 class SensorReader extends Source {
   // private final BufferedReader reader;
-  private static final List<String> vehicleTypes = List.of(
-    "car",
-    "truck",
-    "van",
-    "minivan"
-  );
-  
+  private static final Set<String> vehicleTypes = VehicleFeesConfig.getAllVehicleTypes();
   private static final int minMillis = 1000;
   private static final int maxMillis = 5000;
 
@@ -26,7 +22,8 @@ class SensorReader extends Source {
 
   @Override
   public void getEvents(List<Event> eventCollector) {
-		String vehicle = vehicleTypes.get(
+	    List<String> vehicleTypesList = new ArrayList<>(vehicleTypes);
+		String vehicle = vehicleTypesList.get(
 			ThreadLocalRandom.current().nextInt(vehicleTypes.size())
 		);
 		eventCollector.add(new VehicleEvent(vehicle));
