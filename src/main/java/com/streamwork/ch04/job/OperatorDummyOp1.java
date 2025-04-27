@@ -22,8 +22,9 @@ public class OperatorDummyOp1 extends Operator {
 	@Override
 	public void apply(Event event, EventCollector eventCollector) {
 		TransactionEvent e = (TransactionEvent) event;
-		String debugCallerClass = this.getClass().getSimpleName();
-		eventCollector.add(new TransactionScoreEvent(e, 2.0f, debugCallerClass));
+		String debugClass = this.getClass().getSimpleName();
+		eventCollector.add(
+				new TransactionEvent(e, debugClass));
 	}
 
 }

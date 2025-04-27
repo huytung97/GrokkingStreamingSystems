@@ -15,17 +15,22 @@ public class FraudDetectionJob {
     // One stream can have multiple channels. Different operator can be hooked up
     // to different channels to receive different events. When no channel is selected,
     // the default channel will be used.
-    Stream evalResults1 = transactionOut.applyOperator(new AvgTicketAnalyzer("avg ticket analyzer",
+    Stream evalResultDummy1 = transactionOut.applyOperator(new OperatorDummyOp1("DummyOperator1",
+        	2, new UserAccountFieldsGrouping()));
+    
+    // block 1
+    Stream evalResults1 = evalResultDummy1.applyOperator(new AvgTicketAnalyzer("avg ticket analyzer",
         2, new UserAccountFieldsGrouping()));
-    Stream evalResults2 = transactionOut.applyOperator(new WindowedProximityAnalyzer("windowed proximity analyzer",
+    Stream evalResults2 = evalResultDummy1.applyOperator(new WindowedProximityAnalyzer("windowed proximity analyzer",
         2, new UserAccountFieldsGrouping()));
+    
+    // block 2
     Stream evalResults3 = transactionOut.applyOperator(new WindowedTransactionCountAnalyzer("windowed transaction count analyzer",
         2, new UserAccountFieldsGrouping()));
-    Stream evalResultDummy1 = transactionOut.applyOperator(new OperatorDummyOp1("DummyOperator1",
-    	2, new UserAccountFieldsGrouping()));
+    
 
     ScoreStorage store = new ScoreStorage();
-    Streams.of(evalResults1, evalResults2, evalResults3, evalResultDummy1)
+    Streams.of(evalResults1, evalResults2, evalResults3)
            .applyOperator(new ScoreAggregator("score aggregator", 2, new GroupByTransactionId(), store));
 
     Logger.log("This is a streaming job that detect suspicious transactions." +
