@@ -21,9 +21,11 @@ public class FraudDetectionJob {
         2, new UserAccountFieldsGrouping()));
     Stream evalResults3 = transactionOut.applyOperator(new WindowedTransactionCountAnalyzer("windowed transaction count analyzer",
         2, new UserAccountFieldsGrouping()));
+    Stream evalResultDummy1 = transactionOut.applyOperator(new OperatorDummyOp1("DummyOperator1",
+    	2, new UserAccountFieldsGrouping()));
 
     ScoreStorage store = new ScoreStorage();
-    Streams.of(evalResults1, evalResults2, evalResults3)
+    Streams.of(evalResults1, evalResults2, evalResults3, evalResultDummy1)
            .applyOperator(new ScoreAggregator("score aggregator", 2, new GroupByTransactionId(), store));
 
     Logger.log("This is a streaming job that detect suspicious transactions." +

@@ -13,4 +13,11 @@ public class TransactionScoreEvent implements Event {
     this.transaction = transaction;
     this.score = score;
   }
+  
+  public TransactionScoreEvent(TransactionEvent transaction, float score, String callerDebug) {
+	this.transaction = transaction;
+	this.score = score;
+	
+	Logger.log("Object caller information: " + callerDebug + " -> \n");
+  }
 }
