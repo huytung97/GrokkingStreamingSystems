@@ -54,23 +54,26 @@ class TransactionSource extends Source {
 
       float amount;
       long timeOffsetSeconds = 0;
+      int userAccount = 0;
+      int merchantId = 0;
       // The input is {amount},{merchandiseId}. For example, 42.00,3.
       try {
         String[] values = transaction.split(",");
         amount = Float.parseFloat(values[0]);
-        if (values.length > 1) {
-          timeOffsetSeconds = Long.parseLong(values[1]);
-        }
+        timeOffsetSeconds = Long.parseLong(values[1]);
+        userAccount = Integer.parseInt(values[2]);
+        merchantId = Integer.parseInt(values[3]);
       } catch (Exception e) {
-        Logger.log("Input needs to be in this format: {amount} or {amount},{time_offset_seconds}. For example: 42.00,-3\n");
+        // Logger.log("Input needs to be in this format: {amount} or {amount},{time_offset_seconds}. For example: 42.00,-3\n");
+        Logger.log("Input needs to be in this format: {amount},{time_offset_seconds}" + 
+        			",{user_id},{merchant_id}. For example: 42.00,-3,1,2\n");
         return; // No transaction to emit.
       }
 
       // Assuming all transactions are from the same user. Transaction id and time are generated automatically.
-      int userAccount = 1;
       String transactionId = UUID.randomUUID().toString();
       Instant transactionTime = LocalDateTime.now().plusSeconds(timeOffsetSeconds).atZone(ZoneId.systemDefault()).toInstant();
-      TransactionEvent event = new TransactionEvent(transactionId, amount, transactionTime, -1, userAccount);
+      TransactionEvent event = new TransactionEvent(transactionId, amount, transactionTime, merchantId, userAccount);
       eventCollector.add(event);
 
       Logger.log("\n");  // A empty line before logging new events.
